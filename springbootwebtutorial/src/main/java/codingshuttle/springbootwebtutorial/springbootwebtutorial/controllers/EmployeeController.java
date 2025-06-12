@@ -1,9 +1,10 @@
 package codingshuttle.springbootwebtutorial.springbootwebtutorial.controllers;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.EmployeeEntity;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.repositories.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -13,14 +14,21 @@ public class EmployeeController {
 //    public String getMyMessage() {
 //        return "Secret Message: dn@#jas*";
 //    }
+
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeController(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
     @GetMapping("{employeeID}")
-    public EmployeeDTO getEmployeeById(@PathVariable Long employeeID) {
-        return new EmployeeDTO(employeeID, "Aruj", "aruj@gmail.com", 23, LocalDate.of(2021,1,12), true);
+    public EmployeeEntity getEmployeeById(@PathVariable Long employeeID) {
+        return employeeRepository.findById(employeeID).orElse(null);
     }
 
     @GetMapping
-    public String getAllEmployees(@RequestParam(required = false) Integer age, @RequestParam(required = false) String sortBy) {
-        return "Hi age: " + age + " " + sortBy;
+    public List<EmployeeEntity> getAllEmployees(@RequestParam(required = false) Integer age, @RequestParam(required = false) String sortBy) {
+        return employeeRepository.findAll();
     }
 
     @PostMapping
@@ -33,9 +41,8 @@ public class EmployeeController {
         return "Hello from PUT";
     }
 
-    @PostMapping (path = "/addEmpployee")
-    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee) {
-        inputEmployee.setId(100L);
-        return inputEmployee; //ideally we save it inside DB
+    @PostMapping (path = "/addEmployee")
+    public EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity inputEmployee) {
+        return employeeRepository.save(inputEmployee);
     }
 }
