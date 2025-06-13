@@ -2,7 +2,7 @@ package codingshuttle.springbootwebtutorial.springbootwebtutorial.controllers;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.EmployeeEntity;
-import codingshuttle.springbootwebtutorial.springbootwebtutorial.repositories.EmployeeRepository;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,25 +15,21 @@ public class EmployeeController {
 //        return "Secret Message: dn@#jas*";
 //    }
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
+
     @GetMapping("{employeeID}")
-    public EmployeeEntity getEmployeeById(@PathVariable Long employeeID) {
-        return employeeRepository.findById(employeeID).orElse(null);
+    public EmployeeDTO getEmployeeById(@PathVariable Long employeeID) {
+        return employeeService.getEmployeeById(employeeID);
     }
 
     @GetMapping
-    public List<EmployeeEntity> getAllEmployees(@RequestParam(required = false) Integer age, @RequestParam(required = false) String sortBy) {
-        return employeeRepository.findAll();
-    }
-
-    @PostMapping
-    public String createNewEmployee() {
-        return "Hello from POST";
+    public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false) Integer age, @RequestParam(required = false) String sortBy) {
+        return employeeService.getAllEmployees();
     }
 
     @PutMapping
@@ -42,7 +38,7 @@ public class EmployeeController {
     }
 
     @PostMapping (path = "/addEmployee")
-    public EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity inputEmployee) {
-        return employeeRepository.save(inputEmployee);
+    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee) {
+        return employeeService.createNewEmployee(inputEmployee);
     }
 }
