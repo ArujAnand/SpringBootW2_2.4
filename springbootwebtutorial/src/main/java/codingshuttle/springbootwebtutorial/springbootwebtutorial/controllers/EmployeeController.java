@@ -1,11 +1,11 @@
 package codingshuttle.springbootwebtutorial.springbootwebtutorial.controllers;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
-import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.EmployeeEntity;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/employees") //gives path for the parent
@@ -32,13 +32,23 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
-    @PutMapping
-    public String updateEmployeeId() {
-        return "Hello from PUT";
+    @PutMapping(path = "/{employeeId}")
+    public EmployeeDTO updateEmployeeById(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long employeeId) {
+        return employeeService.updateEmployeeById(employeeDTO, employeeId);
     }
 
     @PostMapping (path = "/addEmployee")
     public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee) {
         return employeeService.createNewEmployee(inputEmployee);
+    }
+
+    @DeleteMapping (path = "/{employeeId}")
+    public boolean deleteEmployeeById(@PathVariable Long employeeId) {
+        return employeeService.deleteEmployeeById(employeeId);
+    }
+
+    @PatchMapping(path = "/{employeeId}")
+    public EmployeeDTO updatePartialEmployeeById (@RequestBody Map<String, Object> updates, @PathVariable Long employeeId) {
+        return employeeService.updatePartialEmployeeById(employeeId, updates);
     }
 }
