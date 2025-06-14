@@ -8,9 +8,11 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -24,9 +26,10 @@ public class EmployeeService {
         this.mapper = mapper;
     }
 
-    public EmployeeDTO getEmployeeById(Long employeeID) {
-        EmployeeEntity employeeEntity = employeeRepository.findById(employeeID).orElse(null);
-        return mapper.map(employeeEntity, EmployeeDTO.class);
+    public Optional <EmployeeDTO> getEmployeeById(Long employeeID) {
+        return employeeRepository.findById(employeeID).map(employeeEntity1 -> mapper.map(employeeEntity1, EmployeeDTO.class));
+        //If optional is empty the map() simply returns Optional.empty immediately  it never executes the mapping function
+        //findById function provided by JPA also returns an optional
     }
 
     public List<EmployeeDTO> getAllEmployees() {

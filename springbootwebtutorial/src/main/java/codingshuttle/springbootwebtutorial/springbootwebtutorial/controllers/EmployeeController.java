@@ -2,10 +2,12 @@ package codingshuttle.springbootwebtutorial.springbootwebtutorial.controllers;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.services.EmployeeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/employees") //gives path for the parent
@@ -23,8 +25,10 @@ public class EmployeeController {
 
 
     @GetMapping("{employeeID}")
-    public EmployeeDTO getEmployeeById(@PathVariable Long employeeID) {
-        return employeeService.getEmployeeById(employeeID);
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long employeeID) {
+        Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(employeeID);
+        return employeeDTO.map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
