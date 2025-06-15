@@ -74,6 +74,11 @@ public class EmployeeService {
         return false;
     }
 
+    /**
+     * Updates partial fields for the given employee ID
+     * @param updates Map of fields updated for the employeeID
+     * @param employeeId EmployeeId of the employee for which fields has to be changed
+     */
     public EmployeeDTO updatePartialEmployeeById(Long employeeId, Map<String, Object> updates) {
         boolean exists = existsById(employeeId);
         if (!exists) {

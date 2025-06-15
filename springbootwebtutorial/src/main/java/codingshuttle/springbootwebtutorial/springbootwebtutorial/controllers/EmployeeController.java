@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,17 @@ public class EmployeeController {
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long employeeID) {
         Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(employeeID);
         return employeeDTO.map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new NoSuchElementException("Employee not found"));
+    }
+
+    /**
+     * If NoSuchElement Exception occurs in this EmployeeController Class then it will be handled by this method
+     * @param exception NoSuchElementException
+     * @return Status code with message
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> handleEmployeeNotFound(NoSuchElementException exception) {
+        return new ResponseEntity<>("Employee was not found", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping
@@ -39,7 +50,7 @@ public class EmployeeController {
     }
 
     @PutMapping(path = "/{employeeId}")
-    public ResponseEntity <EmployeeDTO> updateEmployeeById(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long employeeId) {
+    public ResponseEntity <EmployeeDTO> updateEmployeeById(@RequestBody @Valid EmployeeDTO employeeDTO, @PathVariable Long employeeId) {
         return ResponseEntity.ok(employeeService.updateEmployeeById(employeeDTO, employeeId));
     }
 
@@ -59,6 +70,12 @@ public class EmployeeController {
     }
 
     @PatchMapping(path = "/{employeeId}")
+    //Not added @Valid here as we may or may not get some inputs
+    /**
+     * Updates partial fields for the given employee ID
+     * @param updates Map of fields updated for the employeeID
+     * @param employeeId EmployeeId of the employee for which fields has to be changed
+     */
     public ResponseEntity <EmployeeDTO> updatePartialEmployeeById (@RequestBody Map<String, Object> updates, @PathVariable Long employeeId) {
         EmployeeDTO employeeDTO = employeeService.updatePartialEmployeeById(employeeId, updates);
         if (employeeDTO == null)
