@@ -1,5 +1,6 @@
 package codingshuttle.springbootwebtutorial.springbootwebtutorial.entities;
 
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.annotations.EmployeeAgeValidation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,7 @@ public class EmployeeEntity {
     long id;
     private String name;
     private String email;
+    @EmployeeAgeValidation
     private Integer age;
     private LocalDate dateOfJoining;
     @JsonProperty("isActive")

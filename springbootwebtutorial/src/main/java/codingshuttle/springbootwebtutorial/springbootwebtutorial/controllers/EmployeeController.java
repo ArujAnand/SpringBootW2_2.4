@@ -2,8 +2,8 @@ package codingshuttle.springbootwebtutorial.springbootwebtutorial.controllers;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +44,7 @@ public class EmployeeController {
     }
 
     @PostMapping (path = "/addEmployee")
-    public ResponseEntity <EmployeeDTO> createNewEmployee(@RequestBody EmployeeDTO inputEmployee) {
+    public ResponseEntity <EmployeeDTO> createNewEmployee(@RequestBody @Valid EmployeeDTO inputEmployee) {
         EmployeeDTO savedEmployee = employeeService.createNewEmployee(inputEmployee);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
