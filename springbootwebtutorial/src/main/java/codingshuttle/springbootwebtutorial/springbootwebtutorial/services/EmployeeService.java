@@ -2,6 +2,7 @@ package codingshuttle.springbootwebtutorial.springbootwebtutorial.services;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.EmployeeEntity;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.ResourceNotFoundException;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.repositories.EmployeeRepository;
 import org.springframework.util.ReflectionUtils;
 import org.modelmapper.ModelMapper;
@@ -45,20 +46,20 @@ public class EmployeeService {
     }
 
     public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long employeeId) {
+        boolean exists = existsById(employeeId);
+        if (!exists) throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
 //        create an employee with this data if not present otherwise update
-        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
-                .orElse(new EmployeeEntity());
-
-        employeeEntity.setName(employeeDTO.getName());
-        employeeEntity.setEmail(employeeDTO.getEmail());
-        employeeEntity.setAge(employeeDTO.getAge());
-        employeeEntity.setDateOfJoining(employeeDTO.getDateOfJoining());
-        employeeEntity.setIsActive(employeeDTO.getIsActive());
-//        employeeEntity.setId(employeeId);
+        EmployeeEntity employeeEntity = mapper.map(employeeDTO, EmployeeEntity.class);
+        employeeEntity.setId(employeeId);
         EmployeeEntity savedEmployeeEntity = employeeRepository.save(employeeEntity);
         return mapper.map(savedEmployeeEntity, EmployeeDTO.class);
     }
 
+    /**
+     *
+     * @param employeeId id to be searched in the DB for existence
+     * @return {@code TRUE} if found else {@code FALSE}
+     */
     public boolean existsById (Long employeeId) {
         if (employeeRepository.existsById(employeeId))
             return true;

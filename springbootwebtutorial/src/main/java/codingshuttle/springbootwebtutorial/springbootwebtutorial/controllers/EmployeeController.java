@@ -1,6 +1,7 @@
 package codingshuttle.springbootwebtutorial.springbootwebtutorial.controllers;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.EmployeeDTO;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.ResourceNotFoundException;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class EmployeeController {
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long employeeID) {
         Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(employeeID);
         return employeeDTO.map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElseThrow(() -> new NoSuchElementException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: "+employeeID));
     }
 
     /**
