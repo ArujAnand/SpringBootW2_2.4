@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER}) //to be applied on
 @Constraint(validatedBy = {EmployeeAgeValidator.class}) //validator function
 public @interface EmployeeAgeValidation {
-    String message() default "Have to be certain age";
+    String message() default "Age has to be greater than 17";
 
     Class<?>[] groups() default { };
 

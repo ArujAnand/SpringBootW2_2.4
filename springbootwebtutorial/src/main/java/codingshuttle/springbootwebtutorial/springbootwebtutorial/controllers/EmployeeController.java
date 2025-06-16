@@ -50,6 +50,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
+    /**
+     * @param employeeDTO Details of the employee
+     * @param employeeId Employee to be updated
+     * @return Response Entity with the updated data
+     * Updates information for the given employee id if exits else throws ResourceNotFoundException
+     */
     @PutMapping(path = "/{employeeId}")
     public ResponseEntity <EmployeeDTO> updateEmployeeById(@RequestBody @Valid EmployeeDTO employeeDTO, @PathVariable Long employeeId) {
         return ResponseEntity.ok(employeeService.updateEmployeeById(employeeDTO, employeeId));

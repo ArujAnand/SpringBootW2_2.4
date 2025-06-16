@@ -45,10 +45,21 @@ public class EmployeeService {
         return mapper.map(savedEmployeeEntity, EmployeeDTO.class);
     }
 
+    /**
+     * Checks if the employee with given id exists
+     * @param employeeId id to be searched in the DB for existence
+     *@return {@code TRUE} if found else throw ResourceNotFoundException
+     */
+    public boolean isExistsByEmployeeId(Long employeeId) {
+        boolean exists = employeeRepository.existsById(employeeId);
+        if (!exists)
+            throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
+        return true;
+    }
+
     public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long employeeId) {
-        boolean exists = existsById(employeeId);
-        if (!exists) throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
-//        create an employee with this data if not present otherwise update
+        isExistsByEmployeeId(employeeId);
+        //        create an employee with this data if not present otherwise update
         EmployeeEntity employeeEntity = mapper.map(employeeDTO, EmployeeEntity.class);
         employeeEntity.setId(employeeId);
         EmployeeEntity savedEmployeeEntity = employeeRepository.save(employeeEntity);
@@ -56,23 +67,23 @@ public class EmployeeService {
     }
 
     /**
-     *
+     * Checks if the employee with given id exists
      * @param employeeId id to be searched in the DB for existence
      * @return {@code TRUE} if found else {@code FALSE}
      */
     public boolean existsById (Long employeeId) {
-        if (employeeRepository.existsById(employeeId))
-            return true;
-        return false;
+        return employeeRepository.existsById(employeeId);
     }
 
+    /**
+     * Deletes employee with given id
+     * @param employeeId id of the employee to be deleted
+     * @return {@code TRUE} if the employee is deleted else return {@code False}
+     */
     public boolean deleteEmployeeById(Long employeeId) {
-        boolean exists = existsById(employeeId);
-        if (exists) {
-            employeeRepository.deleteById(employeeId);
-            return true;
-        }
-        return false;
+        isExistsByEmployeeId(employeeId);
+        employeeRepository.deleteById(employeeId);
+        return true;
     }
 
     /**
