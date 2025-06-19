@@ -2,7 +2,7 @@ package codingshuttle.springbootwebtutorial.springbootwebtutorial.services;
 
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.DepartmentDTO;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.DepartmentEntity;
-import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.EmployeeEntity;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.DepartmentExistsException;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.repositories.DepartmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,14 @@ public class DepartmentService {
 
     public DepartmentDTO createNewDepartment(DepartmentDTO inputDepartment) {
         DepartmentEntity toSaveEntity = mapper.map(inputDepartment, DepartmentEntity.class);
+        String title = toSaveEntity.getTitle();
+        List<DepartmentEntity> departmentEntities = departmentRepository.findAll();
+        boolean departmentExists = departmentEntities.stream()
+                .anyMatch(entity -> entity.getTitle().equals(title));
+
+        if(departmentExists) {
+            throw new DepartmentExistsException("Department with name: "+ title + " already exists");
+        }
         DepartmentEntity savedDepartment = departmentRepository.save(toSaveEntity);
         return mapper.map(savedDepartment, DepartmentDTO.class);
     }

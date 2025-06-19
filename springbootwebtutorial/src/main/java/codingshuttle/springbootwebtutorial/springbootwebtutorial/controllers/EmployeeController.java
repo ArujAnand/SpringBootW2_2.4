@@ -78,13 +78,13 @@ public class EmployeeController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping(path = "/{employeeId}")
-    //Not added @Valid here as we may or may not get some inputs
     /**
      * Updates partial fields for the given employee ID
      * @param updates Map of fields updated for the employeeID
      * @param employeeId EmployeeId of the employee for which fields has to be changed
      */
+    @PatchMapping(path = "/{employeeId}")
+    //Not added @Valid here as we may or may not get some inputs
     public ResponseEntity <EmployeeDTO> updatePartialEmployeeById (@RequestBody Map<String, Object> updates, @PathVariable Long employeeId) {
         EmployeeDTO employeeDTO = employeeService.updatePartialEmployeeById(employeeId, updates);
         if (employeeDTO == null)
