@@ -3,11 +3,13 @@ package codingshuttle.springbootwebtutorial.springbootwebtutorial.services;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.dto.DepartmentDTO;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.entities.DepartmentEntity;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.DepartmentExistsException;
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.ResourceNotFoundException;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.repositories.DepartmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +20,19 @@ public class DepartmentService {
     public DepartmentService(DepartmentRepository departmentRepository, ModelMapper mapper) {
         this.departmentRepository = departmentRepository;
         this.mapper = mapper;
+    }
+
+
+    /**
+     * @param departmentId id of the department to be searched
+     * @throws ResourceNotFoundException If no department is found with the given ID.
+     */
+    public void isDepartmentExistsById(long departmentId) {
+        if (departmentRepository.existsById(departmentId)) {
+            return;
+        }
+
+        throw new ResourceNotFoundException("Department with id: " + departmentId + " does not exist");
     }
 
     public List<DepartmentDTO> getAllDepartments() {
@@ -39,5 +54,20 @@ public class DepartmentService {
         }
         DepartmentEntity savedDepartment = departmentRepository.save(toSaveEntity);
         return mapper.map(savedDepartment, DepartmentDTO.class);
+    }
+
+    /**
+     * Retrieves a department by its unique identifier.
+     *
+     * @param departmentId The unique ID of the department to retrieve.
+     *  @return The {@link DepartmentDTO} containing the department's details.
+     * @throws ResourceNotFoundException If no department is found with the given ID.
+     */
+    public DepartmentDTO getDepartmentByid(long departmentId) {
+        //check if department exists
+        isDepartmentExistsById(departmentId);
+        //if exists
+        DepartmentEntity departmentEntity = departmentRepository.findById(departmentId).get();
+        return mapper.map(departmentEntity, DepartmentDTO.class);
     }
 }

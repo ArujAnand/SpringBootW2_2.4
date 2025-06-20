@@ -47,14 +47,14 @@ public class EmployeeService {
 
     /**
      * Checks if the employee with given id exists
+     *
      * @param employeeId id to be searched in the DB for existence
-     *@return {@code TRUE} if found else throw ResourceNotFoundException
+     * @throws ResourceNotFoundException If no employee with given id exists
      */
-    public boolean isExistsByEmployeeId(Long employeeId) {
+    public void isExistsByEmployeeId(Long employeeId) {
         boolean exists = employeeRepository.existsById(employeeId);
         if (!exists)
             throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
-        return true;
     }
 
     public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long employeeId) {

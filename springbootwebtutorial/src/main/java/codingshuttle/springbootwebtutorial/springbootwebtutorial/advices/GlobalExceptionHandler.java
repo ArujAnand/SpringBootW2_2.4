@@ -1,5 +1,6 @@
 package codingshuttle.springbootwebtutorial.springbootwebtutorial.advices;
 
+import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.DepartmentExistsException;
 import codingshuttle.springbootwebtutorial.springbootwebtutorial.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleInternalServerError(Exception exception) {
         ApiError apiError= ApiError.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message(exception.getMessage())
+                .build();
+
+        return buildErrorResponseEntity(apiError);
+    }
+
+
+    @ExceptionHandler(DepartmentExistsException.class)
+    public ResponseEntity<ApiResponse<?>> handleDepartmentExistsException(Exception exception) {
+        ApiError apiError = ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
                 .message(exception.getMessage())
                 .build();
 

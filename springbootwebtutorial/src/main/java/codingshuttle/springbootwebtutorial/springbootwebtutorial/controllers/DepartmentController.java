@@ -28,4 +28,9 @@ public class DepartmentController {
         DepartmentDTO savedDepartment = departmentService.createNewDepartment(inputDepartment);
         return new ResponseEntity<>(savedDepartment,HttpStatus.CREATED);
     }
+
+    @GetMapping(path = "/{departmentId}")
+    public ResponseEntity<DepartmentDTO> getDepartmentById(@PathVariable long departmentId) {
+        return ResponseEntity.ok(departmentService.getDepartmentByid(departmentId));
+    }
 }
