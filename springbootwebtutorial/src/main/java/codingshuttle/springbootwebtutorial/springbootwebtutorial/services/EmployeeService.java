@@ -57,10 +57,27 @@ public class EmployeeService {
             throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
     }
 
+    /**
+     * create an employee with this data if not present otherwise updates
+     * @param employeeDTO updated information (complete)
+     * @param employeeId id of the employee to be updated
+     * @return updated EmployeeDTO
+     */
     public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long employeeId) {
-        isExistsByEmployeeId(employeeId);
-        //        create an employee with this data if not present otherwise update
-        EmployeeEntity employeeEntity = mapper.map(employeeDTO, EmployeeEntity.class);
+        try {
+            isExistsByEmployeeId(employeeId);
+        } catch (ResourceNotFoundException exception) {
+            return createNewEmployee(employeeDTO);
+        }
+
+        //employee exists (replace manual updation in next update)
+        EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).get();
+        employeeEntity.setIsActive(employeeDTO.getIsActive());
+        employeeEntity.setAge(employeeDTO.getAge());
+        employeeEntity.setName(employeeDTO.getName());
+        employeeEntity.setEmail(employeeDTO.getEmail());
+        employeeEntity.setDateOfJoining(employeeDTO.getDateOfJoining());
+        mapper.map(employeeDTO, EmployeeEntity.class);
         employeeEntity.setId(employeeId);
         EmployeeEntity savedEmployeeEntity = employeeRepository.save(employeeEntity);
         return mapper.map(savedEmployeeEntity, EmployeeDTO.class);

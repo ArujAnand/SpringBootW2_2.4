@@ -42,4 +42,9 @@ public class DepartmentController {
             return ResponseEntity.ok(true);
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping(path = "/{departmentId}")
+    public ResponseEntity<DepartmentDTO> updateDepartmentById(@RequestBody @Valid DepartmentDTO departmentDTO, @PathVariable long departmentId) {
+        return ResponseEntity.ok(departmentService.updateDepartmentById(departmentDTO, departmentId));
+    }
 }

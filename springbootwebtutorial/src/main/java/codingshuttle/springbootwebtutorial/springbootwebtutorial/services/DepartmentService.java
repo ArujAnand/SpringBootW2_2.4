@@ -76,4 +76,25 @@ public class DepartmentService {
         departmentRepository.deleteById(departmentId);
         return true;
     }
+
+    /**
+     * Updates and saves the DTO to the DB, Creates new department with this id does not exist
+     * @param departmentDTO DTO with the information to be updated
+     * @param departmentId id of the department to be updated
+     * @return updated and saved DTO
+     */
+    public DepartmentDTO updateDepartmentById (DepartmentDTO departmentDTO, long departmentId) {
+        try {
+            isDepartmentExistsById(departmentId);
+        } catch (ResourceNotFoundException exception) {
+            return createNewDepartment(departmentDTO);
+        }
+
+        //replace manual updation in next update
+        DepartmentEntity updateDepartment = departmentRepository.findById(departmentId).get();
+        updateDepartment.settitle(departmentDTO.getTitle());
+        updateDepartment.setActive(departmentDTO.isActive());
+        DepartmentEntity savedDepartmentEntity = departmentRepository.save(updateDepartment);
+        return mapper.map(savedDepartmentEntity, DepartmentDTO.class);
+    }
 }
