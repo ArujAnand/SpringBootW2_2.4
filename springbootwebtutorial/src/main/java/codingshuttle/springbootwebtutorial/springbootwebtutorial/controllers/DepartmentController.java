@@ -33,4 +33,13 @@ public class DepartmentController {
     public ResponseEntity<DepartmentDTO> getDepartmentById(@PathVariable long departmentId) {
         return ResponseEntity.ok(departmentService.getDepartmentByid(departmentId));
     }
+
+    @DeleteMapping(path = "/{departmentId}")
+    public ResponseEntity<Boolean> deleteDepartmentById(@PathVariable long departmentId) {
+        boolean gotDeleted = departmentService.deleteEmployeeById(departmentId);
+
+        if (gotDeleted)
+            return ResponseEntity.ok(true);
+        return ResponseEntity.notFound().build();
+    }
 }

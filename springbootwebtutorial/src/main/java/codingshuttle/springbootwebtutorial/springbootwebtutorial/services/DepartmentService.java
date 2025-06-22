@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,8 +65,15 @@ public class DepartmentService {
     public DepartmentDTO getDepartmentByid(long departmentId) {
         //check if department exists
         isDepartmentExistsById(departmentId);
-        //if exists
+        //if exists - which we are sure it will as we check for existence beforehand hence using .get
         DepartmentEntity departmentEntity = departmentRepository.findById(departmentId).get();
         return mapper.map(departmentEntity, DepartmentDTO.class);
+    }
+
+    public boolean deleteEmployeeById(long departmentId) {
+        isDepartmentExistsById(departmentId);
+
+        departmentRepository.deleteById(departmentId);
+        return true;
     }
 }
